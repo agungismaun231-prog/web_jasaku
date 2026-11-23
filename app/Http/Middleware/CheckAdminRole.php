@@ -19,6 +19,16 @@ class CheckAdminRole
             return $next($request);
         }
 
+        if (auth()->check() && $request->routeIs('dashboard')) {
+            if (auth()->user()->role === 'technician') {
+                return redirect()->route('technician.dashboard');
+            }
+
+            if (auth()->user()->role === 'customer') {
+                return redirect()->route('customer.dashboard');
+            }
+        }
+
         abort(403, 'Unauthorized - Admin access only');
     }
 }

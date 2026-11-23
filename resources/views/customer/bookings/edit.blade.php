@@ -63,7 +63,7 @@
                                 <select class="form-control @error('technician_id') is-invalid @enderror" id="technician_id" name="technician_id">
                                     <option value="">-- Biarkan Admin Menugaskan --</option>
                                     @foreach($technicians as $technician)
-                                        <option value="{{ $technician->id }}" @if($booking->technician_id == $technician->id) selected @endif>
+                                        <option value="{{ $technician->id }}" data-specialization="{{ strtolower($technician->specialization) }}" @if(old('technician_id', $booking->technician_id) == $technician->id) selected @endif>
                                             {{ $technician->name }} ({{ $technician->specialization }})
                                         </option>
                                     @endforeach
@@ -145,7 +145,9 @@
         function filterServices() {
             const category = document.getElementById('category').value;
             const select = document.getElementById('service_id');
+            const technicianSelect = document.getElementById('technician_id');
             let selectedServiceHidden = false;
+            let selectedTechnicianHidden = false;
 
             Array.from(select.options).forEach(function(option) {
                 if (!option.value) {
@@ -161,9 +163,28 @@
                 }
             });
 
+            Array.from(technicianSelect.options).forEach(function(option) {
+                if (!option.value) {
+                    return;
+                }
+
+                const specialization = option.getAttribute('data-specialization') || '';
+                const isAvailable = specialization.includes(category.toLowerCase());
+                option.hidden = !isAvailable;
+                option.disabled = !isAvailable;
+
+                if (option.selected && !isAvailable) {
+                    selectedTechnicianHidden = true;
+                }
+            });
+
             if (selectedServiceHidden) {
                 select.value = '';
                 updateServiceInfo();
+            }
+
+            if (selectedTechnicianHidden) {
+                technicianSelect.value = '';
             }
         }
 

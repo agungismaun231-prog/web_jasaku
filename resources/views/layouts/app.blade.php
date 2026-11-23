@@ -524,10 +524,12 @@
                    class="s-link @if(request()->routeIs('customer.bookings.*')) active @endif">
                     <i class="bi bi-calendar-check"></i> Pemesanan Saya
                 </a>
-                <a href="#" class="s-link" data-bs-toggle="modal" data-bs-target="#modalInvoice">
+                <a href="{{ route('customer.invoice.index') }}"
+                   class="s-link @if(request()->routeIs('customer.invoice.*')) active @endif">
                     <i class="bi bi-receipt"></i> Invoice Saya
                 </a>
-                <a href="#" class="s-link" data-bs-toggle="modal" data-bs-target="#modalLayanan">
+                <a href="{{ route('customer.services') }}"
+                   class="s-link @if(request()->routeIs('customer.services')) active @endif">
                     <i class="bi bi-wrench-adjustable"></i> Layanan Tersedia
                 </a>
             @endif

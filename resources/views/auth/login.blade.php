@@ -184,6 +184,9 @@
                 <div class="card-footer-text">
                     Belum punya akun? <a href="{{ route('register') }}">Daftar sekarang</a>
                 </div>
+                <div class="card-footer-text" style="margin-top:10px;">
+                    Masuk sebagai teknisi? <a href="{{ route('login.technician') }}">Klik di sini</a>
+                </div>
             </div>
         </div>
     </div>

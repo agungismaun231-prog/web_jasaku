@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
-use App\Models\User;
+use App\Models\Rating;
+use App\Models\Technician;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -88,12 +89,14 @@ class TechnicianDashboardController extends Controller
     {
         // Get currently authenticated user
         $user = Auth::user();
+        $technician = Technician::where('user_id', $user->id)->first();
+
+        if (!$technician) {
+            abort(404, 'Data teknisi tidak ditemukan');
+        }
 
         // ===== FETCH TECHNICIAN'S BOOKINGS =====
-        
-        // Get all bookings assigned to this technician
-        // Relationship: User -> Booking (via user_id where user.role='technician')
-        $allBookings = Booking::where('technician_id', $user->id)
+        $allBookings = Booking::where('technician_id', $technician->id)
             ->with('customer', 'service')
             ->get();
 
@@ -119,15 +122,8 @@ class TechnicianDashboardController extends Controller
             ->count();
         
         // Calculate average rating dari completed bookings
-        $completedBookingsWithRating = $allBookings
-            ->where('status', 'completed')
-            ->filter(function($booking) {
-                return $booking->rating !== null;
-            });
-        
-        $averageRating = $completedBookingsWithRating->count() > 0
-            ? $completedBookingsWithRating->avg('rating')
-            : 0;
+        $averageRating = Rating::where('technician_id', $technician->id)
+            ->avg('rating') ?? 0;
 
         // ===== UPCOMING BOOKINGS =====
         
@@ -144,10 +140,10 @@ class TechnicianDashboardController extends Controller
         // ===== COMPLETED BOOKINGS WITH PAGINATION =====
         
         // Get completed bookings dengan pagination untuk history viewing
-        $completedBookings = Booking::where('technician_id', $user->id)
+        $completedBookings = Booking::where('technician_id', $technician->id)
             ->where('status', 'completed')
             ->with('customer', 'service')
-            ->orderBy('completed_at', 'desc')
+            ->orderBy('updated_at', 'desc')
             ->paginate(10);
 
         // ===== RETURN VIEW =====
@@ -164,6 +160,7 @@ class TechnicianDashboardController extends Controller
             'upcomingBookings' => $upcomingBookings,
             'completedBookings' => $completedBookings,
             'user' => $user,
+            'technician' => $technician,
         ]);
     }
 }

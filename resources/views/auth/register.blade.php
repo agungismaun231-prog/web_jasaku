@@ -130,6 +130,19 @@
                         @error('email')<div class="f-error">{{ $message }}</div>@enderror
                     </div>
                     <div class="form-group">
+                        <label for="phone" class="f-label">Nomor Telepon</label>
+                        <input type="tel" class="f-control @error('phone') is-invalid @enderror"
+                               id="phone" name="phone" value="{{ old('phone') }}"
+                               placeholder="0812 3456 7890" required>
+                        @error('phone')<div class="f-error">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="address" class="f-label">Alamat</label>
+                        <textarea class="f-control @error('address') is-invalid @enderror"
+                                  id="address" name="address" rows="3" placeholder="Jl. Raya ..." required>{{ old('address') }}</textarea>
+                        @error('address')<div class="f-error">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="form-group">
                         <label for="password" class="f-label">Kata Sandi</label>
                         <input type="password" class="f-control @error('password') is-invalid @enderror"
                                id="password" name="password" placeholder="••••••••" required>

@@ -76,21 +76,23 @@ class AuthController extends Controller
             'password' => 'required|min:6',
         ]);
 
-        // Attempt login menggunakan email dan password
-        if (Auth::attempt($validated)) {
-            // Regenerate session untuk security (prevent session fixation)
+        $user = User::where('email', strtolower(trim($validated['email'])))->first();
+
+        if ($user && $user->verifyPassword($validated['password'])) {
+            Auth::login($user);
             $request->session()->regenerate();
-            
-            // Redirect ke dashboard sesuai role user
-            $user = Auth::user();
+
             if ($user->role === 'admin') {
                 return redirect()->route('dashboard')->with('success', 'Selamat datang Admin!');
-            } else {
-                return redirect()->route('customer.dashboard')->with('success', 'Selamat datang!');
             }
+
+            if ($user->role === 'technician') {
+                return redirect()->route('technician.dashboard')->with('success', 'Selamat datang, Teknisi!');
+            }
+
+            return redirect()->route('customer.dashboard')->with('success', 'Selamat datang!');
         }
 
-        // Login gagal - return ke form dengan error
         return back()->withErrors([
             'email' => 'Email atau password salah.',
         ])->onlyInput('email');
@@ -117,27 +119,22 @@ class AuthController extends Controller
             'password' => 'required|min:6',
         ]);
 
-        // Attempt login menggunakan email dan password
-        if (Auth::attempt($validated)) {
-            $user = Auth::user();
-            
-            // Validasi bahwa user adalah technician
+        $user = User::where('email', strtolower(trim($validated['email'])))->first();
+
+        if ($user && $user->verifyPassword($validated['password'])) {
             if ($user->role !== 'technician') {
-                // Logout jika role bukan technician
                 Auth::logout();
                 return back()->withErrors([
                     'email' => 'Akun ini bukan akun teknisi. Silakan gunakan login reguler.',
                 ])->onlyInput('email');
             }
-            
-            // Regenerate session untuk security
+
+            Auth::login($user);
             $request->session()->regenerate();
-            
-            // Redirect ke technician dashboard
+
             return redirect()->route('technician.dashboard')->with('success', 'Selamat datang, Teknisi!');
         }
 
-        // Login gagal - return ke form dengan error
         return back()->withErrors([
             'email' => 'Email atau password salah.',
         ])->onlyInput('email');

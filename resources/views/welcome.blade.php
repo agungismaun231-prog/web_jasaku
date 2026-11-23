@@ -119,7 +119,7 @@
         <div class="nav-menu">
             @if(Route::has('login'))
                 @auth
-                    <a href="{{ url('/dashboard') }}" class="nav-btn">Dashboard</a>
+                    <a href="{{ route('home') }}" class="nav-btn">Dashboard</a>
                 @else
                     <a href="{{ route('login') }}" class="nav-btn">Masuk</a>
                     @if(Route::has('register'))
@@ -139,7 +139,7 @@
             <p class="hero-desc">Servis AC dan gadget oleh teknisi berpengalaman. Dari perawatan AC hingga perbaikan smartphone dan laptop, dengan harga transparan dan garansi layanan.</p>
             <div class="hero-cta">
                 @auth
-                    <a href="{{ url('/dashboard') }}" class="btn-hero-primary">
+                    <a href="{{ route('home') }}" class="btn-hero-primary">
                         <i class="bi bi-speedometer2"></i> Buka Dashboard
                     </a>
                 @else
@@ -255,7 +255,7 @@
                 <h2>AC Nyaman, Gadget Kembali Lancar</h2>
                 <p>Pesan layanan AC atau gadget sekarang. Teknisi kami siap membantu dengan layanan profesional dan harga transparan.</p>
                 @auth
-                    <a href="{{ url('/dashboard') }}" class="btn-hero-primary" style="display:inline-flex;">
+                    <a href="{{ route('home') }}" class="btn-hero-primary" style="display:inline-flex;">
                         <i class="bi bi-speedometer2"></i> Buka Dashboard
                     </a>
                 @else

@@ -87,6 +87,9 @@ class CustomerBookingController extends Controller
 
         // Get service untuk total_price
         $service = $this->findServiceInCategory($validated['service_id'], $validated['category']);
+        if (!empty($validated['technician_id'])) {
+            $this->findTechnicianInCategory($validated['technician_id'], $validated['category']);
+        }
 
         // Buat booking
         $booking = Booking::create([
@@ -150,7 +153,7 @@ class CustomerBookingController extends Controller
                 ->orWhereNull('category');
         })->orderBy('category')->get();
         $technicians = Technician::where('status', '!=', 'inactive')->get();
-        $selectedCategory = $booking->service->category ?? 'AC';
+        $selectedCategory = old('category', $booking->service->category ?? 'AC');
 
         return view('customer.bookings.edit', compact('booking', 'services', 'technicians', 'selectedCategory'));
     }
@@ -184,6 +187,9 @@ class CustomerBookingController extends Controller
 
         // Get service untuk total_price
         $service = $this->findServiceInCategory($validated['service_id'], $validated['category']);
+        if (!empty($validated['technician_id'])) {
+            $this->findTechnicianInCategory($validated['technician_id'], $validated['category']);
+        }
 
         // Update booking
         $booking->update([
@@ -265,5 +271,21 @@ class CustomerBookingController extends Controller
         }
 
         return $service;
+    }
+
+    private function findTechnicianInCategory(int|string $technicianId, string $category): Technician
+    {
+        $technician = Technician::whereKey($technicianId)
+            ->where('status', '!=', 'inactive')
+            ->whereRaw('LOWER(specialization) LIKE ?', ['%' . strtolower($category) . '%'])
+            ->first();
+
+        if (!$technician) {
+            throw ValidationException::withMessages([
+                'technician_id' => 'Teknisi yang dipilih tidak sesuai dengan kategori jasa.',
+            ]);
+        }
+
+        return $technician;
     }
 }

@@ -73,6 +73,7 @@ class TechnicianProfileController extends Controller
 
         // Validate input
         $validated = $request->validate([
+            'name' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
             'specialization' => 'nullable|string|max:100',
             'description' => 'nullable|string|max:500',
@@ -93,10 +94,7 @@ class TechnicianProfileController extends Controller
 
         $technician->update($validated);
 
-        // Update user name if provided
-        if ($request->has('name')) {
-            $user->update(['name' => $request->input('name')]);
-        }
+        $user->update(['name' => $validated['name']]);
 
         return redirect()->route('technician.profile.show')
             ->with('success', '✓ Profil berhasil diperbarui');

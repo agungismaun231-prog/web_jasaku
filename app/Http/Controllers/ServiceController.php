@@ -62,8 +62,49 @@ class ServiceController extends Controller
      */
     public function index()
     {
+        if (auth()->check() && auth()->user()->role === 'customer') {
+            $query = Service::query();
+
+            if (request('category') === 'AC') {
+                $query->where(function ($servicesQuery) {
+                    $servicesQuery->where('category', 'AC')
+                        ->orWhereNull('category');
+                });
+            } elseif (request('category') === 'Gadget') {
+                $query->where('category', 'Gadget');
+            }
+
+            if (request()->filled('search')) {
+                $search = request('search');
+                $query->where(function ($servicesQuery) use ($search) {
+                    $servicesQuery->where('name', 'like', '%' . $search . '%')
+                        ->orWhere('description', 'like', '%' . $search . '%');
+                });
+            }
+
+            switch (request('sort')) {
+                case 'price_low':
+                    $query->orderBy('price');
+                    break;
+                case 'price_high':
+                    $query->orderByDesc('price');
+                    break;
+                case 'name':
+                    $query->orderBy('name');
+                    break;
+                default:
+                    $query->latest();
+                    break;
+            }
+
+            $services = $query->withCount('bookings')->paginate(10)->withQueryString();
+
+            return view('customer.services.index', compact('services'));
+        }
+
         // Paginate 10 services per page dengan count bookings
         $services = Service::withCount('bookings')->paginate(10);
+
         return view('services.index', compact('services'));
     }
 

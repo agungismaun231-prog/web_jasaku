@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
@@ -82,6 +83,27 @@ class User extends Authenticatable
      * 
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
+    public function verifyPassword(string $plainPassword): bool
+    {
+        $storedPassword = (string) $this->password;
+
+        try {
+            if (Hash::check($plainPassword, $storedPassword)) {
+                return true;
+            }
+        } catch (\RuntimeException $e) {
+            // Legacy records may still store plain-text or non-bcrypt values.
+        }
+
+        if ($storedPassword === $plainPassword) {
+            $this->password = Hash::make($plainPassword);
+            $this->save();
+            return true;
+        }
+
+        return false;
+    }
+
     public function technician()
     {
         return $this->hasOne(Technician::class);

@@ -96,9 +96,11 @@ class TechnicianEarningsController extends Controller
             'total_completed' => Booking::where('technician_id', $technician->id)
                 ->where('status', 'completed')
                 ->count(),
-            'total_earnings' => $bookings->sum(function ($booking) {
-                return $booking->invoice?->total ?? 0;
-            }),
+            'total_earnings' => Invoice::whereIn('booking_id',
+                Booking::where('technician_id', $technician->id)
+                    ->where('status', 'completed')
+                    ->select('id')
+            )->sum('total'),
             'by_service' => $this->earningsByService($technician),
             'by_month' => $this->earningsByMonth($technician),
         ];

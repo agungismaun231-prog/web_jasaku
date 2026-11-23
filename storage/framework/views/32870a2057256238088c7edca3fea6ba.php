@@ -158,6 +158,47 @@ endif;
 unset($__errorArgs, $__bag); ?>
                     </div>
                     <div class="form-group">
+                        <label for="phone" class="f-label">Nomor Telepon</label>
+                        <input type="tel" class="f-control <?php $__errorArgs = ['phone'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
+                               id="phone" name="phone" value="<?php echo e(old('phone')); ?>"
+                               placeholder="0812 3456 7890" required>
+                        <?php $__errorArgs = ['phone'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><div class="f-error"><?php echo e($message); ?></div><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                    </div>
+                    <div class="form-group">
+                        <label for="address" class="f-label">Alamat</label>
+                        <textarea class="f-control <?php $__errorArgs = ['address'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
+                                  id="address" name="address" rows="3" placeholder="Jl. Raya ..." required><?php echo e(old('address')); ?></textarea>
+                        <?php $__errorArgs = ['address'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><div class="f-error"><?php echo e($message); ?></div><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                    </div>
+                    <div class="form-group">
                         <label for="password" class="f-label">Kata Sandi</label>
                         <input type="password" class="f-control <?php $__errorArgs = ['password'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -208,4 +249,4 @@ unset($__errorArgs, $__bag); ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-<?php /**PATH C:\xampp\htdocs\web\resources\views/auth/register.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\xampp\htdocs\web\resources\views\auth\register.blade.php ENDPATH**/ ?>

@@ -212,6 +212,9 @@ unset($__errorArgs, $__bag); ?>
                 <div class="card-footer-text">
                     Belum punya akun? <a href="<?php echo e(route('register')); ?>">Daftar sekarang</a>
                 </div>
+                <div class="card-footer-text" style="margin-top:10px;">
+                    Masuk sebagai teknisi? <a href="<?php echo e(route('login.technician')); ?>">Klik di sini</a>
+                </div>
             </div>
         </div>
     </div>

@@ -181,6 +181,41 @@
         @media(max-width:768px){.slider-wrapper{height:360px;}.slider-content{padding:24px !important;flex-direction:column;align-items:flex-start!important;justify-content:center!important;}.slider-content > div:last-child{display:none;}}
     </style>
 
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <a href="{{ route('customer.services', ['category' => 'AC']) }}" class="customer-service-category">
+                <span class="customer-service-category-icon ac"><i class="bi bi-snow"></i></span>
+                <span>
+                    <strong>Jasa AC</strong>
+                    <small>Lihat semua jenis layanan AC</small>
+                </span>
+                <i class="bi bi-chevron-right ms-auto"></i>
+            </a>
+        </div>
+        <div class="col-md-6">
+            <a href="{{ route('customer.services', ['category' => 'Gadget']) }}" class="customer-service-category">
+                <span class="customer-service-category-icon gadget"><i class="bi bi-phone"></i></span>
+                <span>
+                    <strong>Jasa Gadget</strong>
+                    <small>Lihat semua jenis layanan gadget</small>
+                </span>
+                <i class="bi bi-chevron-right ms-auto"></i>
+            </a>
+        </div>
+    </div>
+    <style>
+        .customer-service-category{display:flex;align-items:center;gap:14px;min-height:88px;padding:16px 20px;
+            color:var(--text-primary);text-decoration:none;background:var(--bg-card);border:1px solid var(--border);
+            border-radius:var(--radius-lg);transition:var(--tr);}
+        .customer-service-category:hover{border-color:var(--blue-400);box-shadow:var(--shadow-md);transform:translateY(-2px);}
+        .customer-service-category strong,.customer-service-category small{display:block;}
+        .customer-service-category small{color:var(--text-secondary);}
+        .customer-service-category-icon{display:flex;flex:0 0 48px;width:48px;height:48px;align-items:center;
+            justify-content:center;color:white;border-radius:12px;font-size:23px;}
+        .customer-service-category-icon.ac{background:linear-gradient(135deg,#2563eb,#60a5fa);}
+        .customer-service-category-icon.gadget{background:linear-gradient(135deg,#7c3aed,#a78bfa);}
+    </style>
+
     <div class="row g-4">
         <div class="col-lg-8">
             <div class="card h-100">

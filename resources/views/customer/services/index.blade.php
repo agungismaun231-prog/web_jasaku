@@ -21,20 +21,46 @@
         </div>
     </div>
 
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <a href="{{ route('customer.services', ['category' => 'AC']) }}"
+               class="service-category-card {{ request('category') === 'AC' ? 'active' : '' }}">
+                <span class="service-category-icon ac"><i class="bi bi-snow"></i></span>
+                <span>
+                    <strong>Jasa AC</strong>
+                    <small>Lihat semua layanan AC</small>
+                </span>
+                <i class="bi bi-chevron-right ms-auto"></i>
+            </a>
+        </div>
+        <div class="col-md-6">
+            <a href="{{ route('customer.services', ['category' => 'Gadget']) }}"
+               class="service-category-card {{ request('category') === 'Gadget' ? 'active' : '' }}">
+                <span class="service-category-icon gadget"><i class="bi bi-phone"></i></span>
+                <span>
+                    <strong>Jasa Gadget</strong>
+                    <small>Lihat semua layanan gadget</small>
+                </span>
+                <i class="bi bi-chevron-right ms-auto"></i>
+            </a>
+        </div>
+    </div>
+
     <!-- Search & Filter -->
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-body">
-            <div class="row g-3">
+            <form method="GET" action="{{ route('customer.services') }}" class="row g-3">
+                <input type="hidden" name="category" value="{{ request('category') }}">
                 <div class="col-md-6">
-                    <form method="GET" class="d-flex gap-2">
+                    <div class="d-flex gap-2">
                         <input type="text" name="search" class="form-control" placeholder="Cari layanan..." value="{{ request('search') }}">
-                        <button type="submit" class="btn btn-outline-primary">
+                        <button type="submit" class="btn btn-outline-primary" aria-label="Cari layanan">
                             <i class="fas fa-search"></i>
                         </button>
-                    </form>
+                    </div>
                 </div>
                 <div class="col-md-3">
-                    <select name="sort" class="form-select" onchange="window.location.href='?sort=' + this.value">
+                    <select name="sort" class="form-select" onchange="this.form.submit()">
                         <option value="latest" {{ request('sort') === 'latest' ? 'selected' : '' }}>Terbaru</option>
                         <option value="price_low" {{ request('sort') === 'price_low' ? 'selected' : '' }}>Harga Termurah</option>
                         <option value="price_high" {{ request('sort') === 'price_high' ? 'selected' : '' }}>Harga Tertinggi</option>
@@ -42,22 +68,21 @@
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <select name="category" class="form-select" onchange="this.form.submit()">
-                        <option value="">Semua Kategori</option>
-                        @php
-                            $categories = \App\Models\Service::distinct()->pluck('category');
-                        @endphp
-                        @foreach($categories as $cat)
-                            <option value="{{ $cat }}" {{ request('category') === $cat ? 'selected' : '' }}>{{ $cat }}</option>
-                        @endforeach
-                    </select>
+                    @if(request()->hasAny(['category', 'search', 'sort']))
+                        <a href="{{ route('customer.services') }}" class="btn btn-outline-secondary w-100">
+                            <i class="bi bi-x-circle me-1"></i>Hapus Filter
+                        </a>
+                    @endif
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 
     <!-- Services Grid -->
     @if($services && $services->count() > 0)
+        @if(request('category'))
+            <h2 class="h5 mb-3">{{ request('category') === 'Gadget' ? 'Semua Jasa Gadget' : 'Semua Jasa AC' }}</h2>
+        @endif
         <div class="row g-4">
             @foreach($services as $service)
                 <div class="col-lg-4 col-md-6">
@@ -88,7 +113,7 @@
                                     <small class="text-muted">
                                         <i class="fas fa-tag"></i> Kategori
                                     </small>
-                                    <span class="badge bg-light text-dark">{{ $service->category ?? 'General' }}</span>
+                                    <span class="badge bg-light text-dark">{{ $service->category ?? 'AC' }}</span>
                                 </div>
                                 @if($service->warranty_months)
                                     <div class="d-flex justify-content-between">
@@ -134,7 +159,7 @@
                                 <h6 class="mt-3">Spesifikasi</h6>
                                 <ul>
                                     <li>Durasi: {{ $service->duration_minutes }} Menit</li>
-                                    <li>Kategori: {{ $service->category }}</li>
+                                    <li>Kategori: {{ $service->category ?? 'AC' }}</li>
                                     <li>Harga: Rp {{ number_format($service->price, 0, ',', '.') }}</li>
                                     @if($service->warranty_months)
                                         <li>Garansi: {{ $service->warranty_months }} Bulan</li>
@@ -176,6 +201,56 @@
 </div>
 
 <style>
+    .service-category-card {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-height: 88px;
+        padding: 16px 20px;
+        color: var(--text-primary);
+        text-decoration: none;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        transition: var(--tr);
+    }
+
+    .service-category-card:hover,
+    .service-category-card.active {
+        border-color: var(--blue-400);
+        box-shadow: var(--shadow-md);
+        transform: translateY(-2px);
+    }
+
+    .service-category-card strong,
+    .service-category-card small {
+        display: block;
+    }
+
+    .service-category-card small {
+        color: var(--text-secondary);
+    }
+
+    .service-category-icon {
+        display: flex;
+        flex: 0 0 48px;
+        width: 48px;
+        height: 48px;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        border-radius: 12px;
+        font-size: 23px;
+    }
+
+    .service-category-icon.ac {
+        background: linear-gradient(135deg, #2563eb, #60a5fa);
+    }
+
+    .service-category-icon.gadget {
+        background: linear-gradient(135deg, #7c3aed, #a78bfa);
+    }
+
     .page-header {
         padding: 20px 0;
         border-bottom: 1px solid #dee2e6;
